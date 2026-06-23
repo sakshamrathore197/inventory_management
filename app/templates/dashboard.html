@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Dashboard
+</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Total Products</h5>
+                <h2>{{ total_products }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Total Stock</h5>
+                <h2>{{ total_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Low Stock</h5>
+                <h2>{{ low_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Issued Assets</h5>
+                <h2>{{ issued_assets }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h3 class="mt-5">Latest Stock Movements</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Product ID</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Reference</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for movement in latest_movements %}
+        <tr>
+            <td>{{ movement.movement_date }}</td>
+            <td>{{ movement.product_id }}</td>
+            <td>{{ movement.movement_type }}</td>
+            <td>{{ movement.quantity }}</td>
+            <td>{{ movement.reference_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

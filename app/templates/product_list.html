@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Product List</h2>
+<form method="get" action="/products">
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search Product"
+                class="form-control"
+                value="{{ search }}"
+            >
+        </div>
+
+        <div class="col-md-3">
+            <select
+                name="category"
+                class="form-control"
+            >
+                <option value="">All Categories</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Desktop">Desktop</option>
+                <option value="Monitor">Monitor</option>
+                <option value="Printer">Printer</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary">
+                Search
+            </button>
+        </div>
+
+    </div>
+
+</form>
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Current Stock</th>
+            <th>Minimum Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for product in products %}
+
+        <tr
+        {% if product.current_quantity <= product.minimum_quantity %}
+        class="table-warning"
+        {% endif %}
+>
+
+            <td>{{ product.id }}</td>
+
+            <td>{{ product.product_name }}</td>
+
+            <td>{{ product.category }}</td>
+
+            <td>{{ product.brand }}</td>
+
+            <td>{{ product.model_number }}</td>
+
+            <td>{{ product.current_quantity }}</td>
+
+            <td>{{ product.minimum_quantity }}</td>
+
+            <td>{{ product.status }}</td>
+
+            <td>
+                <a
+                href="/products/{{ product.id }}"
+                class="btn btn-sm btn-primary"
+                >
+                View
+            </a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

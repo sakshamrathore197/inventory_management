@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+Product Detail
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Product Detail
+</h2>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <h4>
+            {{ product.product_name }}
+        </h4>
+
+        <hr>
+
+        <p>
+            <strong>Category:</strong>
+            {{ product.category }}
+        </p>
+
+        <p>
+            <strong>Brand:</strong>
+            {{ product.brand }}
+        </p>
+
+        <p>
+            <strong>Model:</strong>
+            {{ product.model_number }}
+        </p>
+
+        <p>
+            <strong>Serial Number:</strong>
+            {{ product.serial_number }}
+        </p>
+
+        <p>
+            <strong>Product Type:</strong>
+            {{ product.product_type }}
+        </p>
+
+        <p>
+            <strong>Unit Price:</strong>
+            ₹ {{ product.unit_price }}
+        </p>
+
+        <p>
+            <strong>Current Stock:</strong>
+            {{ product.current_quantity }}
+        </p>
+
+        <p>
+            <strong>Minimum Stock:</strong>
+            {{ product.minimum_quantity }}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ product.status }}
+        </p>
+
+        <p>
+            <strong>Warranty Expiry:</strong>
+            {{ product.warranty_expiry }}
+        </p>
+
+    </div>
+
+</div>
+<hr>
+
+<h3>Movement History</h3>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Reference</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for movement in movements %}
+
+        <tr>
+            <td>{{ movement.movement_date }}</td>
+            <td>{{ movement.movement_type }}</td>
+            <td>{{ movement.quantity }}</td>
+            <td>{{ movement.reference_name }}</td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+Return Asset
+{% endblock %}
+
+{% block content %}
+
+<h2>Return Asset</h2>
+
+<form method="post" action="/return">
+
+    <div class="mb-3">
+        <label>Product</label>
+
+        <select
+            name="product_id"
+            class="form-control"
+        >
+            {% for product in products %}
+
+            <option value="{{ product.id }}">
+                {{ product.product_name }}
+            </option>
+
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Returned By</label>
+
+        <input
+            type="text"
+            name="returned_by"
+            class="form-control"
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Return Date</label>
+
+        <input
+            type="date"
+            name="return_date"
+            class="form-control"
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Quantity Returned</label>
+
+        <input
+            type="number"
+            name="quantity_returned"
+            class="form-control"
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Condition</label>
+
+        <select
+            name="condition"
+            class="form-control"
+        >
+            <option>Good</option>
+            <option>Damaged</option>
+            <option>Repair Required</option>
+            <option>Lost</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Remarks</label>
+
+        <textarea
+            name="remarks"
+            class="form-control"
+        ></textarea>
+    </div>
+
+    <button class="btn btn-success">
+        Return Asset
+    </button>
+
+</form>
+
+{% endblock %}

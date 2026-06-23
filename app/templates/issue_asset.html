@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}
+Issue Asset
+{% endblock %}
+
+{% block content %}
+
+<h2>Issue Asset</h2>
+
+<form method="post" action="/issue">
+
+    <div class="mb-3">
+        <label>Product</label>
+
+        <select
+            name="product_id"
+            class="form-control"
+        >
+
+            {% for product in products %}
+
+            <option value="{{ product.id }}">
+                {{ product.product_name }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Quantity Issued</label>
+
+        <input
+            type="number"
+            name="quantity_issued"
+            class="form-control"
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Issued To</label>
+
+        <input
+            type="text"
+            name="issued_to"
+            class="form-control"
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Issue Type</label>
+
+        <select
+            name="issue_type"
+            class="form-control"
+        >
+            <option>Employee</option>
+            <option>Client</option>
+            <option>Project</option>
+            <option>Internal Use</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Issue Date</label>
+
+        <input
+            type="date"
+            name="issue_date"
+            class="form-control"
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Expected Return Date</label>
+
+        <input
+            type="date"
+            name="expected_return_date"
+            class="form-control"
+        >
+    </div>
+
+    <div class="mb-3">
+        <label>Remarks</label>
+
+        <textarea
+            name="remarks"
+            class="form-control"
+        ></textarea>
+    </div>
+
+    <button class="btn btn-warning">
+        Issue Asset
+    </button>
+
+</form>
+
+{% endblock %}
