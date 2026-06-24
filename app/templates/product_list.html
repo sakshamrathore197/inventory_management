@@ -43,7 +43,7 @@ Products
     </div>
 
 </form>
-
+<div class="table-responsive">
 <table class="table table-bordered table-hover">
 
     <thead class="table-dark">
@@ -57,6 +57,7 @@ Products
             <th>Minimum Stock</th>
             <th>Status</th>
             <th>Action</th>
+            <th>Edit/Delete</th>
         </tr>
     </thead>
 
@@ -83,8 +84,34 @@ Products
             <td>{{ product.current_quantity }}</td>
 
             <td>{{ product.minimum_quantity }}</td>
+            
 
-            <td>{{ product.status }}</td>
+
+            <td>
+
+                 {% if product.status == "Available" %}
+                 <span class="badge bg-success">
+                     Available
+                 </span>
+                 
+                 {% elif product.status == "Issued" %}
+                 <span class="badge bg-warning">
+                     Issued
+                 </span>
+                 
+                 {% elif product.status == "In Repair" %}
+                 <span class="badge bg-danger">
+                     In Repair
+                 </span>
+                 
+                 {% else %}
+                 <span class="badge bg-secondary">
+                     {{ product.status }}
+                 </span>
+                 
+                 {% endif %}
+                 
+            </td>
 
             <td>
                 <a
@@ -94,6 +121,22 @@ Products
                 View
             </a>
             </td>
+            <td>
+
+    <a
+        href="/products/edit/{{ product.id }}"
+        class="btn btn-warning btn-sm">
+        Edit
+    </a>
+
+    <a
+        href="/products/delete/{{ product.id }}"
+        class="btn btn-danger btn-sm"
+        onclick="return confirm('Delete Product?')">
+        Delete
+    </a>
+
+</td>
 
         </tr>
 
@@ -102,5 +145,5 @@ Products
     </tbody>
 
 </table>
-
+</div>
 {% endblock %}

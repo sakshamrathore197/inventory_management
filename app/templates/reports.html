@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block content %}
+
+<h2>Inventory Report</h2>
+
+<form method="get" class="row mb-3">
+
+    <div class="col-md-2">
+        <input
+            type="text"
+            name="keyword"
+            class="form-control"
+            placeholder="Search Product">
+    </div>
+
+    <div class="col-md-2">
+        <input
+            type="text"
+            name="category"
+            class="form-control"
+            placeholder="Category">
+    </div>
+
+    
+
+    <div class="col-md-2">
+        <select
+            name="status"
+            class="form-control">
+
+            <option value="">All Status</option>
+            <option value="Available">Available</option>
+            <option value="Issued">Issued</option>
+            <option value="In Repair">In Repair</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+    <input
+        type="date"
+        name="date_from"
+        class="form-control">
+</div>
+
+<div class="col-md-2" >
+    <input
+        type="date"
+        name="date_to"
+        class="form-control">
+</div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary">
+            Filter
+        </button>
+
+        <a
+            href="/export-csv"
+            class="btn btn-success">
+            Export CSV
+        </a>
+    </div>
+    
+
+</form>
+<div class="table-responsive">
+
+<table class="table table-bordered table-hover">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Brand</th>
+        <th>Quantity</th>
+        <th>Status</th>
+    </tr>
+
+    {% for product in products %}
+    <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.product_name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.brand }}</td>
+        <td>{{ product.current_quantity }}</td>
+        <td>
+
+            {% if product.status == "Available" %}
+            <span class="badge bg-success">
+                Available
+            </span>
+            
+            {% elif product.status == "Issued" %}
+            <span class="badge bg-warning">
+                Issued
+            </span>
+            
+            {% elif product.status == "In Repair" %}
+            <span class="badge bg-danger">
+                In Repair
+            </span>
+            
+            {% else %}
+            <span class="badge bg-secondary">
+                {{ product.status }}
+            </span>
+            
+            {% endif %}
+            
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+</div>
+
+{% endblock %}

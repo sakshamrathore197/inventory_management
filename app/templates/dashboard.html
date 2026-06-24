@@ -13,8 +13,8 @@ Dashboard
 <div class="row">
 
     <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body ">
                 <h5>Total Products</h5>
                 <h2>{{ total_products }}</h2>
             </div>
@@ -22,7 +22,7 @@ Dashboard
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h5>Total Stock</h5>
                 <h2>{{ total_stock }}</h2>
@@ -31,7 +31,7 @@ Dashboard
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h5>Low Stock</h5>
                 <h2>{{ low_stock }}</h2>
@@ -40,7 +40,7 @@ Dashboard
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow">
+        <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h5>Issued Assets</h5>
                 <h2>{{ issued_assets }}</h2>
@@ -49,10 +49,110 @@ Dashboard
     </div>
 
 </div>
+<div class="row mt-3">
 
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5>Available Assets</h5>
+                <h2>{{ available_assets }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5>In Repair</h5>
+                <h2>{{ repair_items }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5>Damaged Assets</h5>
+                <h2>{{ damaged_items }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5>Warranty Expiring</h5>
+                <h2>{{ warranty_expiring }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h3 class="mt-5">Low Stock Alerts</h3>
+<div class="table-responsive">
+
+<table class="table table-striped table-bordered table-hover">
+
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Current Stock</th>
+            <th>Minimum Stock</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for product in low_stock_products %}
+
+        <tr>
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.current_quantity }}</td>
+            <td>{{ product.minimum_quantity }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+</div>
+<h3 class="mt-5">Latest Products</h3>
+<div class="table-responsive">
+
+<table class="table table-bordered table-hover">
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for product in latest_products %}
+
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.status }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+</div>
 <h3 class="mt-5">Latest Stock Movements</h3>
+<div class="table-responsive">
 
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>Date</th>
@@ -75,5 +175,5 @@ Dashboard
         {% endfor %}
     </tbody>
 </table>
-
+</div>
 {% endblock %}

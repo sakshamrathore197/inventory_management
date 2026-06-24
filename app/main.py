@@ -5,6 +5,9 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import datetime,date,timedelta
 from sqlalchemy import or_
+import csv
+from io import StringIO
+from fastapi.responses import StreamingResponse
 
 
 from app.database import engine,Base
@@ -84,6 +87,15 @@ def dashboard(
         models.Product.status == "Damaged"
     ).count()
 
+    #low stock product
+    low_stock_products = db.query(
+    models.Product
+    ).filter(
+    models.Product.current_quantity
+    <=
+    models.Product.minimum_quantity
+    ).all()
+
     # Warranty Expiring Within 30 Days
     today = date.today()
 
@@ -103,6 +115,13 @@ def dashboard(
     ).order_by(
         models.MovementHistory.created_at.desc()
     ).limit(10).all()
+
+    #latest record
+    latest_products = db.query(
+    models.Product
+    ).order_by(
+    models.Product.created_at.desc()
+    ).limit(5).all()
     
     return templates.TemplateResponse(
         "dashboard.html",
@@ -116,7 +135,9 @@ def dashboard(
             "repair_items": repair_items,
             "damaged_items": damaged_items,
             "warranty_expiring": warranty_expiring,
-            "latest_movements": latest_movements
+            "latest_movements": latest_movements,
+            "low_stock_products": low_stock_products,
+            "latest_products": latest_products
         }
     )
 #ADD PRODUCT
@@ -134,6 +155,7 @@ def add_product_page(
 
 @app.post("/products/add")
 def save_product(
+    request: Request,
     product_name: str = Form(...),
     category: str = Form(...),
     brand: str = Form(None),
@@ -147,9 +169,76 @@ def save_product(
 
     db: Session = Depends(get_db)
 ):
-        product = models.Product(
-        product_name=product_name,
-        category=category,
+
+    # Product Name Validation
+    if not product_name.strip():
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Product Name is required"
+            }
+        )
+
+    # Category Validation
+    if not category.strip():
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Category is required"
+            }
+        )
+
+    # Duplicate Product Check
+    existing_product = db.query(
+        models.Product
+    ).filter(
+        models.Product.product_name == product_name
+    ).first()
+
+    if existing_product:
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Product already exists"
+            }
+        )
+
+    # Quantity Validation
+    if current_quantity < 0:
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Current Quantity cannot be negative"
+            }
+        )
+
+    if minimum_quantity < 0:
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Minimum Quantity cannot be negative"
+            }
+        )
+
+    # Price Validation
+    if unit_price < 0:
+        return templates.TemplateResponse(
+            "add_product.html",
+            {
+                "request": request,
+                "error": "Unit Price cannot be negative"
+            }
+        )
+
+    # Create Product
+    product = models.Product(
+        product_name=product_name.strip(),
+        category=category.strip(),
         brand=brand,
         model_number=model_number,
         serial_number=serial_number,
@@ -159,10 +248,12 @@ def save_product(
         minimum_quantity=minimum_quantity,
         warranty_expiry=warranty_expiry
     )
-        db.add(product)
-        db.commit()
-        return RedirectResponse(
-        url="/",
+
+    db.add(product)
+    db.commit()
+
+    return RedirectResponse(
+        url="/products",
         status_code=303
     )
 
@@ -448,3 +539,176 @@ def return_asset(
     "/products",
     status_code=303
     )    
+
+
+#REPORT
+@app.get("/reports")
+def reports(
+    request: Request,
+    keyword: str = "",
+    category: str = "",
+    status: str = "",
+    date_from: str = "",
+    date_to: str = "",
+    db: Session = Depends(get_db)
+):
+
+    query = db.query(models.Product)
+
+    if keyword:
+        query = query.filter(
+            models.Product.product_name.ilike(
+                f"%{keyword}%"
+            )
+        )
+
+    if category:
+        query = query.filter(
+            models.Product.category == category
+        )
+
+    if status:
+        query = query.filter(
+            models.Product.status == status
+        )
+
+    if date_from:
+        query = query.filter(
+            models.Product.created_at >= date_from
+        )
+
+    if date_to:
+        query = query.filter(
+            models.Product.created_at <= date_to
+        )    
+
+
+    products = query.all()
+
+    return templates.TemplateResponse(
+        "reports.html",
+        {
+            "request": request,
+            "products": products,
+            "keyword": keyword,
+            "category": category,
+            "status": status
+
+        }
+    )
+
+#EXPORT-CSV
+@app.get("/export-csv")
+def export_csv(
+    db: Session = Depends(get_db)
+):
+
+    products = db.query(
+        models.Product
+    ).all()
+
+    output = StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "ID",
+        "Product Name",
+        "Category",
+        "Brand",
+        "Quantity",
+        "Minimum Quantity",
+        "Status"
+    ])
+
+    for product in products:
+
+        writer.writerow([
+            product.id,
+            product.product_name,
+            product.category,
+            product.brand,
+            product.current_quantity,
+            product.minimum_quantity,
+            product.status
+        ])
+
+    output.seek(0)
+
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition":
+            "attachment; filename=inventory_report.csv"
+        }
+    )
+
+#edit-product
+@app.get("/products/edit/{product_id}")
+def edit_product_page(
+    product_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    product = db.query(
+        models.Product
+    ).filter(
+        models.Product.id == product_id
+    ).first()
+
+    return templates.TemplateResponse(
+        "edit_product.html",
+        {
+            "request": request,
+            "product": product
+        }
+    )
+
+#Delete-product
+@app.get("/products/edit/{product_id}")
+def edit_product_page(
+    product_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    product = db.query(
+        models.Product
+    ).filter(
+        models.Product.id == product_id
+    ).first()
+
+    return templates.TemplateResponse(
+        "edit_product.html",
+        {
+            "request": request,
+            "product": product
+        }
+    )
+
+@app.post("/products/edit/{product_id}")
+def update_product(
+    product_id: int,
+    product_name: str = Form(...),
+    category: str = Form(...),
+    brand: str = Form(None),
+
+    db: Session = Depends(get_db)
+):
+
+    product = db.query(
+        models.Product
+    ).filter(
+        models.Product.id == product_id
+    ).first()
+
+    product.product_name = product_name
+    product.category = category
+    product.brand = brand
+
+    db.commit()
+
+    return RedirectResponse(
+        "/products",
+        status_code=303
+    )

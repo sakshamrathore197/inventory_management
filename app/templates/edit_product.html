@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Product
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Edit Product</h2>
+
+<form method="post">
+
+    <div class="mb-3">
+        <label class="form-label">
+            Product Name
+        </label>
+
+        <input
+            type="text"
+            name="product_name"
+            class="form-control"
+            value="{{ product.product_name }}"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Category
+        </label>
+
+        <input
+            type="text"
+            name="category"
+            class="form-control"
+            value="{{ product.category }}"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Brand
+        </label>
+
+        <input
+            type="text"
+            name="brand"
+            class="form-control"
+            value="{{ product.brand }}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Model Number
+        </label>
+
+        <input
+            type="text"
+            name="model_number"
+            class="form-control"
+            value="{{ product.model_number }}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Unit Price
+        </label>
+
+        <input
+            type="number"
+            step="0.01"
+            name="unit_price"
+            class="form-control"
+            value="{{ product.unit_price }}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Minimum Quantity
+        </label>
+
+        <input
+            type="number"
+            name="minimum_quantity"
+            class="form-control"
+            value="{{ product.minimum_quantity }}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Status
+        </label>
+
+        <select
+            name="status"
+            class="form-select">
+
+            <option value="Available"
+                {% if product.status == "Available" %}
+                selected
+                {% endif %}>
+                Available
+            </option>
+
+            <option value="Issued"
+                {% if product.status == "Issued" %}
+                selected
+                {% endif %}>
+                Issued
+            </option>
+
+            <option value="In Repair"
+                {% if product.status == "In Repair" %}
+                selected
+                {% endif %}>
+                In Repair
+            </option>
+
+            <option value="Damaged"
+                {% if product.status == "Damaged" %}
+                selected
+                {% endif %}>
+                Damaged
+            </option>
+
+        </select>
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-primary">
+        Update Product
+    </button>
+
+    <a
+        href="/products"
+        class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

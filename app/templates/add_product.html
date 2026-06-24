@@ -8,6 +8,12 @@ Add Product
 
 <h2 class="mb-4">Add Product</h2>
 
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
 <form method="post" action="/products/add">
 
     <div class="row">

@@ -1,33 +1,172 @@
-body{
+body {
+    margin: 0;
+    padding: 0;
+}
+
+*{
     margin:0;
     padding:0;
+    box-sizing:border-box;
 }
+
+body{
+    font-family:Segoe UI, sans-serif;
+    background:#f4f6f9;
+}
+
+/* SIDEBAR */
 
 .sidebar{
-    width:250px;
-    min-height:100vh;
-    background:#212529;
-    padding:20px;
+    position:fixed;
+    left:0;
+    top:0;
+
+    width:240px;
+    height:100vh;
+
+    background:#1f2937;
+
+    padding-top:20px;
+
+    box-shadow:
+        2px 0 10px rgba(0,0,0,.1);
 }
 
-.sidebar h3{
+.logo{
     color:white;
+
+    font-size:24px;
+    font-weight:700;
+
+    text-align:center;
+
+    padding-bottom:25px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.1);
+}
+
+/* MENU */
+
+.sidebar nav{
+    margin-top:20px;
 }
 
 .sidebar a{
     display:block;
-    color:white;
+
+    color:#d1d5db;
+
     text-decoration:none;
-    padding:12px;
-    margin-bottom:5px;
-    border-radius:5px;
+
+    padding:14px 25px;
+
+    margin:6px 12px;
+
+    border-radius:8px;
+
+    transition:.3s;
 }
 
 .sidebar a:hover{
-    background:#343a40;
+    background:#374151;
+
+    color:white;
+
+    padding-left:35px;
 }
 
+/* CONTENT */
+
 .content{
-    flex:1;
+    margin-left:240px;
+
     padding:30px;
+}
+
+/* PAGE HEADING */
+
+h2{
+    font-weight:700;
+
+    margin-bottom:25px;
+}
+
+/* CARDS */
+
+.card{
+    border:none;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.08);
+
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+/* TABLE */
+
+.table{
+    background:white;
+
+    border-radius:10px;
+
+    overflow:hidden;
+}
+
+.table th{
+    background:#1f2937;
+
+    color:white;
+}
+
+/* BUTTONS */
+
+.btn-primary{
+    background:#2563eb;
+    border:none;
+}
+
+.btn-success{
+    border:none;
+}
+
+/* FORM */
+
+.form-control,
+.form-select{
+    border-radius:8px;
+}
+
+/* ALERTS */
+
+.alert{
+    border-radius:10px;
+}
+
+/* STATUS */
+
+.badge{
+    padding:8px 12px;
+    font-size:13px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .sidebar{
+        width:180px;
+    }
+
+    .content{
+        margin-left:180px;
+        padding:20px;
+    }
+
 }
